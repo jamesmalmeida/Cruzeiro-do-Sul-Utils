@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
   name = 'czds_utils',         # How you named your package folder (MyLib)
   packages = ['czds_utils'],   # Chose the same as "name"
-  version = '1.3',      # Start with a small number and increase it with every change you make
+  version = '1.4',      # Start with a small number and increase it with every change you make
   license='GPL-3.0',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'Libraries for the Cruzeiro do Sul Database',   # Give a short description about your library
   author = 'James Moraes de Almeida',                   # Type in your name
   author_email = 'james@almeida.page',      # Type in your E-Mail
   url = 'https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Utils',   # Provide either the link to your github or to your website
-  download_url = 'https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Utils/archive/refs/tags/v1.02.tar.gz',
+  download_url = 'https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Utils/archive/refs/tags/v1.4.tar.gz',
   keywords = ['Cruzeiro do Sul', 'Database'],   # Keywords that define your package best
   install_requires=[            # I get to this in a second
           'regex',

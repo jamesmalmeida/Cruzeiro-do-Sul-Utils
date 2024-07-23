@@ -1,8 +1,8 @@
 from distutils.core import setup
 setup(
-  name = 'czds_utils',         # How you named your package folder (MyLib)
-  packages = ['czds_utils'],   # Chose the same as "name"
-  version = '1.5',      # Start with a small number and increase it with every change you make
+  name = 'CZDS_utils',         # How you named your package folder (MyLib)
+  packages = ['CZDS_utils'],   # Chose the same as "name"
+  version = '1.6',      # Start with a small number and increase it with every change you make
   license='GPL-3.0',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'Libraries for the Cruzeiro do Sul Database',   # Give a short description about your library
   author = 'James Moraes de Almeida',                   # Type in your name

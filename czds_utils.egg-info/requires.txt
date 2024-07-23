@@ -1,5 +1,4 @@
 regex
-os
 pandas
 numpy
 scipy

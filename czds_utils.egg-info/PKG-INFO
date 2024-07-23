@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: czds_utils
+Version: 1.0
+Summary: Libraries for the Cruzeiro do Sul Database
+Home-page: https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Utils
+Download-URL: https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Utils/archive/refs/tags/v1.01.tar.gz
+Author: James Moraes de Almeida
+Author-email: james@almeida.page
+License: GPL-3.0
+Keywords: Cruzeiro do Sul,Database
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+License-File: LICENSE
+Requires-Dist: re
+Requires-Dist: os
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: scipy

@@ -8,7 +8,7 @@ setup(
   author = 'James Moraes de Almeida',                   # Type in your name
   author_email = 'james@almeida.page',      # Type in your E-Mail
   url = 'https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Utils',   # Provide either the link to your github or to your website
-  download_url = 'https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Utils/archive/refs/heads/main.zip',    # I explain this later on
+  download_url = 'https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Utils/archive/refs/tags/v1.01.tar.gz',
   keywords = ['Cruzeiro do Sul', 'Database'],   # Keywords that define your package best
   install_requires=[            # I get to this in a second
           're',
@@ -23,7 +23,7 @@ setup(
     'Intended Audience :: Developers',      # Define that your audience are developers
     'Topic :: Software Development :: Build Tools',
 
-    'License :: OSI Approved :: GNU General Public License v3.0',   # Again, pick a license
+    "License :: OSI Approved :: GNU General Public License (GPL)",
 
     'Programming Language :: Python :: 3',      #Specify which pyhton versions that you want to support
     'Programming Language :: Python :: 3.10',

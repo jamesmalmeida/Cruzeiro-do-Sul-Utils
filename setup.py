@@ -11,7 +11,7 @@ setup(
   download_url = 'https://github.com/jamesmalmeida/Cruzeiro-do-Sul-Utils/archive/refs/tags/v1.01.tar.gz',
   keywords = ['Cruzeiro do Sul', 'Database'],   # Keywords that define your package best
   install_requires=[            # I get to this in a second
-          're',
+          'regex',
           'os',
           'pandas',
           'numpy',

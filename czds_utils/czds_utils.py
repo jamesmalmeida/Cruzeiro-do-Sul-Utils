@@ -1,4 +1,4 @@
-import re
+import regex as re
 import os
 import pandas as pd
 import numpy as np

@@ -1,4 +1,4 @@
-re
+regex
 os
 pandas
 numpy

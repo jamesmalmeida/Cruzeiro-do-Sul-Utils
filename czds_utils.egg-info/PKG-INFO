@@ -15,7 +15,7 @@ Classifier: License :: OSI Approved :: GNU General Public License (GPL)
 Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.10
 License-File: LICENSE
-Requires-Dist: re
+Requires-Dist: regex
 Requires-Dist: os
 Requires-Dist: pandas
 Requires-Dist: numpy

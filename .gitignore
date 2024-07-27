@@ -2,3 +2,5 @@ setup.py
 setup.cfg
 CZDS_utils.egg-info
 dist
+test*
+*.xdi

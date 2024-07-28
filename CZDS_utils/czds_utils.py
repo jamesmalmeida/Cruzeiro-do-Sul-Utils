@@ -227,7 +227,7 @@ class XASNormalization():
 
     def xas_type(energy):
         """Test if the energy range is from a XANES or EXAFS experiment.
-        XANES range is up to 200 eV.
+        XANES range is up to 400 eV.
 
         Keyword arguments:
         energy -- the array of energies from the experiment
@@ -238,7 +238,7 @@ class XASNormalization():
         maximum = max(energy)
         minimum = min(energy)
         energy_range = float(maximum) - float(minimum)
-        if energy_range < 200:
+        if energy_range < 400:
             return "XANES"
         else:
             return "EXAFS"  
@@ -382,21 +382,22 @@ class XASNormalization():
                     flattened_curve.append(flatting) #[0])
 
         # #DEBUG Plots
-        #reference_line_x = range(int(energies_array[0]), int(energies_array[-1])) #Reference line
-        #reference_line_y = [1] * len(reference_line_x) #Reference line
-        #plt.plot(reference_line_x, reference_line_y, color='black', linestyle='dotted')
-        #plt.plot(energies_array, absorption_array, label='Input Spectra', color='black')
-        #plt.plot(energies_array, linear_fit_pre_edge, label='Fit Pre-Edge', color='red', linestyle='dashed')
-        #plt.scatter(start_pre_edge_x, absorption_array[start_pre_edge_x_index], color='black', label='Background start')
-        #plt.scatter(energies_array[end_pre_edge_x_index], absorption_array[end_pre_edge_x_index], color='red', label='Background end')
-        #plt.scatter(E0x, absorption_array[E0x_index], label='E0', color='blue')
-        #plt.scatter(energies_array[npt_min], absorption_array[npt_min], label='EXAFS start', color='green')
-        #plt.scatter(energies_array[last_point_to_fit_exafs], absorption_array[last_point_to_fit_exafs], label='EXAFS end', color='gray')
-        #plt.plot(energies_array, predicted_exafs, label='EXAFS Fit', color='blue', linestyle='dashed')
-        #plt.plot(energies_array, normalized_spectra, label='Normalized Spectra', color='blue', linestyle='solid')
-        #plt.plot(energies_array, flattened_curve, label='Flattened Spectra', color='gray', linestyle='solid')
-        #plt.xlim(int(energies_array[0]), int(energies_array[-1]))
-        #plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        #plt.show()
+        if debug == True:
+            reference_line_x = range(int(energies_array[0]), int(energies_array[-1])) #Reference line
+            reference_line_y = [1] * len(reference_line_x) #Reference line
+            plt.plot(reference_line_x, reference_line_y, color='black', linestyle='dotted')
+            plt.plot(energies_array, absorption_array, label='Input Spectra', color='black')
+            plt.plot(energies_array, linear_fit_pre_edge, label='Fit Pre-Edge', color='red', linestyle='dashed')
+            plt.scatter(start_pre_edge_x, absorption_array[start_pre_edge_x_index], color='black', label='Background start')
+            plt.scatter(energies_array[end_pre_edge_x_index], absorption_array[end_pre_edge_x_index], color='red', label='Background end')
+            plt.scatter(E0x, absorption_array[E0x_index], label='E0', color='blue')
+            plt.scatter(energies_array[npt_min], absorption_array[npt_min], label='EXAFS start', color='green')
+            plt.scatter(energies_array[last_point_to_fit_exafs], absorption_array[last_point_to_fit_exafs], label='EXAFS end', color='gray')
+            plt.plot(energies_array, predicted_exafs, label='EXAFS Fit', color='blue', linestyle='dashed')
+            plt.plot(energies_array, normalized_spectra, label='Normalized Spectra', color='blue', linestyle='solid')
+            plt.plot(energies_array, flattened_curve, label='Flattened Spectra', color='gray', linestyle='solid')
+            plt.xlim(int(energies_array[0]), int(energies_array[-1]))
+            plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+            plt.show()
 
         return energies_array, flattened_curve

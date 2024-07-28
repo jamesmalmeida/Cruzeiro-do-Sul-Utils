@@ -4,3 +4,5 @@ CZDS_utils.egg-info
 dist
 test*
 *.xdi
+XDIs
+temp

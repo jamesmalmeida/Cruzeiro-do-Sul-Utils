@@ -7,6 +7,7 @@ from scipy.stats import linregress
 import math
 from lmfit import Model
 from sklearn.metrics import root_mean_squared_error
+import matplotlib.pyplot as plt #DEBUG
 
 class read():
     def xdi(filepath):
@@ -76,18 +77,24 @@ class read():
         dados = {}
         linhas = texto.splitlines()
         match = re.search(r'#---+', texto, re.MULTILINE)
+        #print('Match', match) #DEBUG
         for nome in nomes_colunas:
             dados[nome] = []
         if match:
             inicio = match.end()
+            #print('inicio',inicio) #DEBUG
             tab_linhas = texto[inicio:].strip().split('\n')
+            #print('tab_linhas', tab_linhas) #DEBUG
             for linha in tab_linhas:
-                if re.match(r'(\s+\d+\.\d+\s+){2,4}', linha):
+                #print('linha',linha) #DEBUG
+                if re.match(r'((\s+)?(-)?\d+\.\d+\s+){1,3}(-)?\d+\.\d+(\s+)?', linha):
                     valores = linha.split()
+                    #print('valores', valores) #DEBUG
                     for nome,valor in zip(nomes_colunas,valores):
                         dados[nome].append(float(valor))
 
 #TRY TO GET THE EXPERIMENT DATA AND TAG THE EXPERIMENT TYPE BASED ON COLUMN NAMES
+        #print(dados)
         try:
             energy = np.array(dados["energy"])
         except KeyError:
@@ -103,33 +110,45 @@ class read():
             itrans = np.array(dados["itrans"])
             experiment_type = "Transmission"
         except KeyError:
-            try:
-                itrans = np.array(dados["transmission(au)"])
-                experiment_type = "Transmission"
-            except KeyError:
-                itrans = None
+            itrans = None
         try:
             irefer = np.array(dados["irefer"])
         except KeyError:
             irefer = None
         try:
-            fluorescence_emission = np.array(dados["fluorescence_emission(au)"])
+            fluorescence_emission = np.array(dados["fluorescence_emission"])
             experiment_type = "Fluorescence"
         except KeyError:
             fluorescence_emission = None
         try:
-            raw_data = np.array(dados["raw(au)"])
+            raw_data = np.array(dados["raw"])
             experiment_type = "Transmission Raw"
         except KeyError:
-            raw_data = None
+            try:
+                raw_data = np.array(dados["transmission"])
+                experiment_type = "Transmission Raw"
+            except KeyError:
+                raw_data = None
+
+        try:
+            normalized_adsorbance = np.array(dados["normalized_absorbance"])
+            experiment_type = "Normalized Transmission"
+        except KeyError:
+            normalized_adsorbance = None
 
 #CHECK EXPERIMENT TYPE
+        #print('experiment_type', experiment_type)
+        #print('keys', nomes_colunas)
         if experiment_type == "Transmission":
             return experiment_type, energy, i0, itrans, np.log(i0/itrans)
         elif experiment_type == "Transmission Raw":
             return experiment_type, energy, raw_data
+        elif experiment_type == "Normalized Transmission":
+            return experiment_type, energy, normalized_adsorbance
         elif experiment_type == "Fluorescence":
             return experiment_type, energy, fluorescence_emission
+        else:
+            print("ERROR, EXPERIMENT TYPE NOT DETECTED")
 
 # OLD STUFF RETURN A DATAFRAME, DELETE AFTER TESTS
 #        df = pd.DataFrame()
@@ -188,7 +207,7 @@ class XASNormalization():
     
     def fit_pre_edge(energies_array, absorption_array, start_pre_edge_x_index, end_pre_edge_x_index):
         #Define the background
-        print('indexes start finish',start_pre_edge_x_index,end_pre_edge_x_index)
+        #print('indexes start finish',start_pre_edge_x_index,end_pre_edge_x_index)
         background_x = energies_array[start_pre_edge_x_index:end_pre_edge_x_index]
         background_y = absorption_array[start_pre_edge_x_index:end_pre_edge_x_index]
         #Linear model for the pre-edge.
@@ -279,10 +298,10 @@ class XASNormalization():
         #Define ending point for the starting range
         exafs_end_shit_from_E0 = 200
         if (E0x + exafs_end_shit_from_E0) > energies_array[-1]:
-            print('DEBUG1', E0x + exafs_end_shit_from_E0, energies_array[-1])
+            #print('DEBUG1', E0x + exafs_end_shit_from_E0, energies_array[-1])
             end_exafs = np.where(energies_array > energies_array[-1] - 50)[0][0]
         else:
-            print('DEBUG2', E0x + exafs_end_shit_from_E0, energies_array[-1])
+            #print('DEBUG2', E0x + exafs_end_shit_from_E0, energies_array[-1])
             end_exafs = np.where(energies_array > E0x + exafs_end_shit_from_E0)[0][0]
         
         if debug == True:
@@ -344,7 +363,7 @@ class XASNormalization():
         method = 'subtract'
         flattened_curve = []
         if method == 'divide':
-            print('Normalizing EXAFS regions with division method')
+            #print('Normalizing EXAFS regions with division method')
             for point in range(len(energies_array)):
                 if energies_array[point] < E0x:
                     flattened_curve.append(normalized_spectra[point])
@@ -353,7 +372,7 @@ class XASNormalization():
                     #print(normalized_spectra[point], predicted_exafs[point], predicted_exafs[E0x_index][0], - predicted_exafs[point] + predicted_exafs[E0x_index][0])
                     flattened_curve.append(flatting) #[0])
         elif method == 'subtract':
-            print('Normalizing EXAFS regions with subtraction method')
+            #print('Normalizing EXAFS regions with subtraction method')
             for point in range(len(energies_array)):
                 if energies_array[point] < E0x:
                     flattened_curve.append(normalized_spectra[point])
@@ -361,5 +380,23 @@ class XASNormalization():
                     flatting = normalized_spectra[point] - predicted_exafs[point] + predicted_exafs[E0x_index][0]
                     #print(normalized_spectra[point], predicted_exafs[point], predicted_exafs[E0x_index][0], - predicted_exafs[point] + predicted_exafs[E0x_index][0])
                     flattened_curve.append(flatting) #[0])
+
+        # #DEBUG Plots
+        #reference_line_x = range(int(energies_array[0]), int(energies_array[-1])) #Reference line
+        #reference_line_y = [1] * len(reference_line_x) #Reference line
+        #plt.plot(reference_line_x, reference_line_y, color='black', linestyle='dotted')
+        #plt.plot(energies_array, absorption_array, label='Input Spectra', color='black')
+        #plt.plot(energies_array, linear_fit_pre_edge, label='Fit Pre-Edge', color='red', linestyle='dashed')
+        #plt.scatter(start_pre_edge_x, absorption_array[start_pre_edge_x_index], color='black', label='Background start')
+        #plt.scatter(energies_array[end_pre_edge_x_index], absorption_array[end_pre_edge_x_index], color='red', label='Background end')
+        #plt.scatter(E0x, absorption_array[E0x_index], label='E0', color='blue')
+        #plt.scatter(energies_array[npt_min], absorption_array[npt_min], label='EXAFS start', color='green')
+        #plt.scatter(energies_array[last_point_to_fit_exafs], absorption_array[last_point_to_fit_exafs], label='EXAFS end', color='gray')
+        #plt.plot(energies_array, predicted_exafs, label='EXAFS Fit', color='blue', linestyle='dashed')
+        #plt.plot(energies_array, normalized_spectra, label='Normalized Spectra', color='blue', linestyle='solid')
+        #plt.plot(energies_array, flattened_curve, label='Flattened Spectra', color='gray', linestyle='solid')
+        #plt.xlim(int(energies_array[0]), int(energies_array[-1]))
+        #plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        #plt.show()
 
         return energies_array, flattened_curve

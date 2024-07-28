@@ -8,6 +8,7 @@ import math
 from lmfit import Model
 from sklearn.metrics import root_mean_squared_error
 import matplotlib.pyplot as plt #DEBUG
+#from sklearn.metrics import mean_squared_error
 
 class read():
     def xdi(filepath):
@@ -401,3 +402,86 @@ class XASNormalization():
             plt.show()
 
         return energies_array, flattened_curve
+
+    def XANES_normalization(energies_array, absorption_array, debug=False):
+        """Recebe um dataset com dados de energia e absorbância e normaliza o dataset."""
+
+        #Call the E0 calculation function and map it to the input spectra.
+        E0x, E0y = XASNormalization.find_E0(energies_array, absorption_array)
+        E0x_index = np.where(energies_array==E0x)[0]
+
+        #Define the initial and final points of the linear fit of the background.
+        ##This definition seemed good for the the tested spectra, might be changed after more tests are performed.
+        start_pre_edge_x_index = int(E0x_index/15)
+        end_pre_edge_x_index = int(E0x_index/3)
+
+        #Linear model for the pre-edge.
+        data_x = energies_array[start_pre_edge_x_index:end_pre_edge_x_index] #background.iloc[:, 0].values
+        data_y = absorption_array[start_pre_edge_x_index:end_pre_edge_x_index] #background.iloc[:, 1].values
+
+        #Perform the linear fit.
+        linear_fit_pre_edge = XASNormalization.fit_pre_edge(energies_array, absorption_array, start_pre_edge_x_index, end_pre_edge_x_index)
+
+        #Perform the normalization
+        edge_step = absorption_array[E0x_index] - linear_fit_pre_edge[E0x_index]
+        if debug:
+            print('energies_array[E0x_index]', energies_array[E0x_index])
+            print('linear_fit_pre_edge[E0x_index]', linear_fit_pre_edge[E0x_index])
+            print('edge_step', edge_step)
+            print('E0x', E0x, 'E0y', E0y)
+        pre_edge_normalized_spectra = (absorption_array - linear_fit_pre_edge) / E0y #(edge_step)
+
+        #Start the needed variables.
+        slope_min = 100000
+
+        np_start = E0x_index[0]
+        np_end = len(pre_edge_normalized_spectra)
+
+        for npt in range(np_start,len(pre_edge_normalized_spectra-5)): 
+            np_init = npt #Initial point of the interval
+
+            #Define the range for the linear fit.
+            data_x = energies_array[np_init:np_end] 
+            data_y = pre_edge_normalized_spectra[np_init:np_end] 
+
+            #Perform the fit
+            resultado_fit = linregress(data_x, data_y)
+            predicted_resulto_fit = np.array(resultado_fit.intercept +
+                                         resultado_fit.slope*data_x)
+
+            #Test if the slope is smaller then the smallest found yet.
+            if abs(resultado_fit.slope) < abs(slope_min):
+                slope_min = resultado_fit.slope
+                min_intercept = resultado_fit.intercept
+                npt_min = npt
+
+        #Defining the data in range
+        data_x = energies_array[npt_min:np_end] #faixa_final.iloc[:, 0].values
+        data_y = pre_edge_normalized_spectra[npt_min:np_end] #faixa_final.iloc[:, 1].values
+
+        #Perform the linear fit again. TODO: No need, we could just get from the already found parameters, although I did not saved the intercepts.
+        resultado_fit_final = linregress(data_x, data_y)
+
+        #Extrapolate for the whole range.
+        xwide = energies_array 
+        predicted_faixa_final = np.array(resultado_fit_final.intercept +
+                                         resultado_fit_final.slope*xwide)
+
+        #Normalized spectra.
+        fit_final = pre_edge_normalized_spectra/predicted_faixa_final
+
+        if debug==True:
+            #For visualizations and DEBUG.
+            plt.plot(energies_array,fit_final,label='Normalized Spectra', color='red')
+            plt.legend(fontsize=16)
+            plt.xlabel("Energy (eV)")
+            plt.ylabel("Absorption") #, fontproperties=font_manager.FontProperties(size=12))
+            plt.xticks(fontsize=16)
+            plt.yticks(fontsize=16)
+            plt.scatter(E0x,float(fit_final[E0x_index]), label='E0 value')
+            plt.scatter(energies_array[npt_min],fit_final[npt_min], color='b', label='Optimal Point')
+            plt.legend()
+            plt.show()
+
+        return energies_array, fit_final
+

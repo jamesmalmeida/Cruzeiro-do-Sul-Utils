@@ -17,9 +17,12 @@ def poly2(x, a, b, c):
         return polinomio
     
 class XDI():
-    xdi_dict = {}
+    xdi_dict   = {}
+    __xdi_filename = ''
     
     def __init__(self, filename, normalize=False):
+        
+        self.__xdi_filename = filename
         
         lines = []
         metadata_lines = []
@@ -124,6 +127,18 @@ class XDI():
 
     def set_dict(self, value):
         self.xdi_dict = value
+        
+    def save(self, filename=''):
+        json_filename = ''
+        
+        if filename=='':
+            json_filename = Path(self.__xdi_filename).stem + ".json"
+        else:
+            json_filename = filename
+            
+        with open(json_filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        
         
     def __find_E0(self, energies, absorption):
         """Finds the absorption edge E0
@@ -379,7 +394,6 @@ class XDI():
         for ncolumn in range(ncolumns): 
             ncolumn_str = str(ncolumn+1)
             if name.lower() in self.xdi_dict['metadata']['Column'][ncolumn_str].lower():
-                print(name.lower(), "  ", self.xdi_dict['metadata']['Column'][ncolumn_str].lower())
                 column_index = ncolumn
                 break
         
@@ -389,7 +403,7 @@ class XDI():
             return self.xdi_dict['data'][ncolumn_str] 
     
     
-    def normalize(self, status=True):
+    def normalize(self, status=False):
         
         #get the data. Data not found will be represented by empty arrays
         energy   = np.array( self.__get_column_with_content("energy") )
@@ -455,7 +469,6 @@ class XDI():
         if not ("normalized" in self.xdi_dict['data']):
             self.xdi_dict['data']["normalized"]={}
             
-        self.xdi_dict['data']["normalized"]["energy"] =  enorm.tolist()
         self.xdi_dict['data']["normalized"]["mu"]     =  mu_norm
      
                

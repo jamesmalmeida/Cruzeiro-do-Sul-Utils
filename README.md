@@ -8,8 +8,19 @@ Libraries for Cruzeiro do Sul Database
 import CZDS_utils
 from CZDS_utils import XDI
 
+#instantiate XDI class
 xdi = XDI("somefile.xdi")
-print(xdi) #print json string before normalization
-xdi.normalize() #include normalized data column 
-print(xdi) #print json string after normalization
+
+# print json string before normalization
+print(xdi)
+
+# include normalized data column 
+xdi.normalize()
+
+#print json string after normalization
+print(xdi)
+
+#save to file (json)
+
+xdi.save("somefile.json")
 ```

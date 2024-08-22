@@ -8,7 +8,7 @@ import math
 from lmfit import Model
 from sklearn.metrics import root_mean_squared_error
 import matplotlib.pyplot as plt #DEBUG
-#from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error
 
 class read():
     def xdi(filepath):

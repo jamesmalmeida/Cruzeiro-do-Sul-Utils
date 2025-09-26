@@ -1,0 +1,30 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "CZDS-utils"
+version = "1.9.1"
+authors = [
+  { name="James Moraes de Almeida", email="james@almeida.page" },
+]
+description = "Tools for processing XAS spectra."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    # Add any dependencies here, for example:
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "regex",
+    "scipy",
+    "lmfit",
+    "matplotlib",
+]

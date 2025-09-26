@@ -436,9 +436,13 @@ class XASNormalization():
 
         np_start = E0x_index[0]
         np_end = len(pre_edge_normalized_spectra)
+        if debug:
+            print('Fit points, start:',np_start,'end:',np_end)
 
-        for npt in range(np_start,len(pre_edge_normalized_spectra-5)): 
+        for npt in range(np_start,np_end-50): 
             np_init = npt #Initial point of the interval
+            if debug:
+                print('Running points', np_init, np_end)
 
             #Define the range for the linear fit.
             data_x = energies_array[np_init:np_end] 
